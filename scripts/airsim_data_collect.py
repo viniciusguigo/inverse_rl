@@ -6,15 +6,19 @@ from rllab.envs.gym_env import GymEnv
 
 from inverse_rl.utils.log_utils import rllab_logdir
 
+import sys
+sys.path.append('../hri_airsim/')
+import hri_airsim
+
 def main():
-    env = TfEnv(GymEnv('Pendulum-v0', record_video=False, record_log=False))
+    env = TfEnv(GymEnv('HRI_AirSim_Landing-v0', record_video=False, record_log=False))
     policy = GaussianMLPPolicy(name='policy', env_spec=env.spec, hidden_sizes=(32, 32))
     algo = TRPO(
         env=env,
         policy=policy,
         n_itr=200,
-        batch_size=2000,
-        max_path_length=1000,
+        batch_size=1000,
+        max_path_length=100,
         discount=0.99,
         store_paths=True,
         baseline=LinearFeatureBaseline(env_spec=env.spec)

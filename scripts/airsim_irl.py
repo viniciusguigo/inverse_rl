@@ -10,11 +10,14 @@ from inverse_rl.algos.irl_trpo import IRLTRPO
 from inverse_rl.models.imitation_learning import AIRLStateAction
 from inverse_rl.utils.log_utils import rllab_logdir, load_latest_experts
 
+import sys
+sys.path.append('../hri_airsim/')
+import hri_airsim
 
 def main():
-    env = TfEnv(GymEnv('Pendulum-v0', record_video=False, record_log=False))
+    env = TfEnv(GymEnv('HRI_AirSim_Landing-v0', record_video=False, record_log=False))
     
-    experts = load_latest_experts('data/pendulum', n=5)
+    experts = load_latest_experts('data/airsim', n=5)
 
     irl_model = AIRLStateAction(env_spec=env.spec, expert_trajs=experts)
     policy = GaussianMLPPolicy(name='policy', env_spec=env.spec, hidden_sizes=(32, 32))
@@ -22,7 +25,7 @@ def main():
         env=env,
         policy=policy,
         irl_model=irl_model,
-        n_itr=200,
+        n_itr=2,
         batch_size=1000,
         max_path_length=100,
         discount=0.99,

@@ -24,8 +24,9 @@ def main(n_idx):
     plt.legend()
 
 if __name__ == '__main__':
-    ns = ['5','10','15','20']
+    ns = ['5','10','15','20','200']
     plt.figure()
     for n in ns:
+        print('Processing {} expert trajectories'.format(n))
         main(n_idx=n)
     plt.show()

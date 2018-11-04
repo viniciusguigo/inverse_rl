@@ -14,7 +14,7 @@ from inverse_rl.utils.log_utils import rllab_logdir, load_latest_experts
 def main():
     env = TfEnv(GymEnv('Pendulum-v0', record_video=False, record_log=False))
     
-    n_experts = 100
+    n_experts = 200
     experts = load_latest_experts('plotting/pendulum_final', n=n_experts)
 
     irl_model = AIRLStateAction(env_spec=env.spec, expert_trajs=experts)

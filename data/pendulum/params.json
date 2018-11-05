@@ -1,1 +1,1 @@
-"TRPO"
+{"optimizer": "ConjugateGradientOptimizer", "store_paths": true, "policy": "GaussianMLPPolicy", "discrim_train_itrs": 50, "max_path_length": 100, "irl_model_wt": 1.0, "fig_dir": "data/pendulum", "__clsname__": "IRLTRPO", "n_itr": 1000, "env": "TfEnv", "entropy_weight": 0.1, "zero_environment_reward": true, "eval_reward": true, "baseline": "LinearFeatureBaseline", "irl_model": {"env_spec": "EnvSpec", "__clsname__": "AIRLStateAction", "expert_trajs": "list"}, "batch_size": 1000, "discount": 0.99}

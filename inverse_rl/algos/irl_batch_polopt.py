@@ -48,6 +48,8 @@ class IRLBatchPolopt(RLAlgorithm, metaclass=Hyperparametrized):
             zero_environment_reward=False,
             init_irl_params=None,
             train_irl=True,
+            eval_reward=False,
+            fig_dir=None,
             key='',
             **kwargs
     ):
@@ -96,6 +98,8 @@ class IRLBatchPolopt(RLAlgorithm, metaclass=Hyperparametrized):
         self.no_reward = zero_environment_reward
         self.discrim_train_itrs = discrim_train_itrs
         self.train_irl = train_irl
+        self.eval_reward = eval_reward
+        self.fig_dir = fig_dir
         self.__irl_params = None
 
         if self.irl_model_wt > 0:
@@ -193,6 +197,10 @@ class IRLBatchPolopt(RLAlgorithm, metaclass=Hyperparametrized):
                 paths = self.compute_irl(paths, itr=itr)
                 returns.append(self.log_avg_returns(paths))
                 samples_data = self.process_samples(itr, paths)
+
+                # evaluate reward model of IRL algorithm
+                if self.eval_reward:
+                    self.irl_model._reward_eval(itr=itr,fig_dir=self.fig_dir)
 
                 logger.log("Logging diagnostics...")
                 self.log_diagnostics(paths)

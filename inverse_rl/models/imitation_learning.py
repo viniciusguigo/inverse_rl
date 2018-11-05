@@ -1,5 +1,8 @@
 import numpy as np
 import tensorflow as tf
+import matplotlib.pyplot as plt
+import seaborn as sns
+sns.set(style='whitegrid', font_scale=1.25)
 
 from inverse_rl.models.architectures import feedforward_energy, relu_net
 from inverse_rl.models.tf_util import discounted_reduce_sum
@@ -375,6 +378,63 @@ class AIRLStateAction(SingleTimestepIRL):
                                                     feed_dict={self.act_t: acts, self.obs_t: obs})
         energy = -energy[:,0] 
         return self.unpack(energy, paths)
+
+    def _reward_eval(self, itr=0,fig_dir=None):
+        """ Evaluate reward for Pendulum-v0
+        https://github.com/openai/gym/wiki/Pendulum-v0
+
+        observation_space: cos(theta)[-1,1], sin(theta)[-1,1], theta_dot[-8,8]
+        action_space: joint_effort[-2,2]
+
+        Fix theta_dot = joint_effort = 0 and evaluate reward for theta [0,2*pi]
+        """
+        # save energy plot for each degree of circle (pendulum trajectory)
+        energy_plot = np.zeros(360)
+        energy_truth_plot = np.zeros(360)
+
+        # correct polar plotting
+        deg_counter = 0
+        rew_max = np.deg2rad(180)**2
+
+        for theta_deg in range(-180,180): # 0 to 359 degrees
+            # print('Evaluating for {} degrees'.format(theta_deg))
+            # generate obs and action
+            theta = np.deg2rad(theta_deg)
+            obs = np.array([np.cos(theta),np.sin(theta),0]).reshape(1,3)
+            acts = np.array([0]).reshape(1,1)
+
+            # eval energy for these obs and act
+            energy  = tf.get_default_session().run(self.energy,
+                                                    feed_dict={self.act_t: acts, self.obs_t: obs})
+            energy = energy[:,0]
+            
+            # save energy values
+            energy_plot[deg_counter] = energy
+            energy_truth_plot[deg_counter] = rew_max-np.deg2rad(theta_deg)**2
+            deg_counter += 1
+
+        # # normalize energy and reward values
+        energy_plot = energy_plot/np.max(energy_plot)
+        energy_truth_plot = energy_truth_plot/np.max(energy_truth_plot)
+
+        # display energy
+        plt.figure()
+        ax = plt.subplot(111, projection='polar')
+        #plt.title('GCL Iteration {}'.format(itr))
+        plt.text(1.25*rew_max, 1.25*rew_max, 'Iteration {}'.format(itr), fontsize=12)
+        
+        # need to rotate gcl plot because polar cannot handle negative values
+        ax.plot(np.arange(-np.pi+np.pi,np.pi+np.pi,2*np.pi/360), energy_plot, 'ob', linewidth=2, label='GCL')
+        ax.plot(np.arange(-np.pi,np.pi,2*np.pi/360), energy_truth_plot, 'or', linewidth=2, label='Truth')
+        # ax.set_rmax(10)
+        ax.set_theta_offset(np.pi/2)
+        plt.legend()
+
+        # save or show
+        if fig_dir is None:
+            plt.show()     
+        else:
+            plt.savefig(fig_dir + '/gcl_itr{}.png'.format(itr))
 
 
 class GAN_GCL(TrajectoryIRL):

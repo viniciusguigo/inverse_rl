@@ -11,11 +11,12 @@ from inverse_rl.models.imitation_learning import AIRLStateAction
 from inverse_rl.utils.log_utils import rllab_logdir, load_latest_experts
 
 
-def main():
+def main(eval_reward = False):
     env = TfEnv(GymEnv('Pendulum-v0', record_video=False, record_log=False))
     
-    n_experts = 200
+    n_experts = 10
     experts = load_latest_experts('plotting/pendulum_final', n=n_experts)
+    dirname='data/pendulum' # dir to save logs and images
 
     irl_model = AIRLStateAction(env_spec=env.spec, expert_trajs=experts)
     policy = GaussianMLPPolicy(name='policy', env_spec=env.spec, hidden_sizes=(32, 32))
@@ -32,12 +33,16 @@ def main():
         irl_model_wt=1.0,
         entropy_weight=0.1, # this should be 1.0 but 0.1 seems to work better
         zero_environment_reward=True,
-        baseline=LinearFeatureBaseline(env_spec=env.spec)
+        baseline=LinearFeatureBaseline(env_spec=env.spec),
+        eval_reward=True,
+        fig_dir = dirname
     )
 
-    with rllab_logdir(algo=algo, dirname='data/pendulum_gcl{}'.format(n_experts)):
+    # with rllab_logdir(algo=algo, dirname='data/pendulum_gcl{}'.format(n_experts)):
+    with rllab_logdir(algo=algo, dirname=dirname):
         with tf.Session():
+            algo.fig_dirname = dirname
             algo.train()
 
 if __name__ == "__main__":
-    main()
+    main(eval_reward = True)

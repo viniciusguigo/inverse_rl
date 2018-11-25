@@ -16,15 +16,15 @@ def main():
     algo = TRPO(
         env=env,
         policy=policy,
-        n_itr=200,
-        batch_size=1000,
+        n_itr=5,
+        batch_size=100,
         max_path_length=100,
         discount=0.99,
         store_paths=True,
         baseline=LinearFeatureBaseline(env_spec=env.spec)
     )
 
-    with rllab_logdir(algo=algo, dirname='data/pendulum'):
+    with rllab_logdir(algo=algo, dirname='data/airsim'):
         algo.train()
 
 if __name__ == "__main__":

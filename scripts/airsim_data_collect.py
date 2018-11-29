@@ -16,7 +16,7 @@ def main():
     algo = TRPO(
         env=env,
         policy=policy,
-        n_itr=5,
+        n_itr=500,
         batch_size=100,
         max_path_length=100,
         discount=0.99,

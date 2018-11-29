@@ -17,7 +17,7 @@ import hri_airsim
 def main():
     env = TfEnv(GymEnv('HRI_AirSim_Landing-v0', record_video=False, record_log=False))
     
-    experts = load_latest_experts('data/airsim', n=5)
+    experts = load_latest_experts('data/airsim_final', n=5)
 
     irl_model = GAIL(env_spec=env.spec, expert_trajs=experts)
     policy = GaussianMLPPolicy(name='policy', env_spec=env.spec, hidden_sizes=(32, 32))
@@ -26,8 +26,8 @@ def main():
         policy=policy,
         irl_model=irl_model,
         n_itr=5,
-        batch_size=100,
-        max_path_length=100,
+        batch_size=1000,
+        max_path_length=200,
         discount=0.99,
         store_paths=True,
         discrim_train_itrs=50,

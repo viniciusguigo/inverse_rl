@@ -1294,9 +1294,9 @@ class HRI_AirSim_Landing(HRI_AirSim):
 
         # Reward: distance to landing pad
         if done:
-            reward = -dist_to_pad_3d
+            reward = 1/dist_to_pad_3d
         else:
-            reward = -dist_to_pad_3d
+            reward = 1/dist_to_pad_3d
         #print('Reward: ', reward)
 
         # # Reward: 1 if close enough to pad, 0 otherwise
@@ -1405,6 +1405,7 @@ class HRI_AirSim_Landing(HRI_AirSim):
             if self.use_gps:
                 mod_imu = self.imu[:12]
             else:
+                print('NO GPS')
                 mod_imu = self.imu[2:12]
 
             # concatenate it to imu values

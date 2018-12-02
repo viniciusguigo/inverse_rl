@@ -42,21 +42,78 @@ def get_expert_fnames(log_dir, n=5):
         print('Loading %s' % fname)
         yield fname
 
+def parse_episode(log_data, obs_log_data, epi_n):
+    """ Return states, actions, rewards from a specific episode.
 
-def load_experts(fname, max_files=float('inf'), min_return=None):
+    Args:
+        epi_n : episode numnber
+
+    Return:
+        states : position, velocity, acceleration  (linear and angular)
+        actions : controls applied
+        rewards : rewards received by the agent
+
+    """
+    # parse specific episode
+    steps = np.where(log_data[:,1] == epi_n)
+    steps = np.squeeze(np.asarray(log_data[steps,0])).astype(int)
+    steps = steps[:-1]
+    print(steps)
+
+    # parse states and actions
+    # hardcoded to take a (15,) vector for obs and (2,) for actions
+    states = obs_log_data[steps,6:]
+    actions = obs_log_data[steps,2:4]
+    rewards = obs_log_data[steps,1]
+    print(rewards)
+
+    return states, actions, rewards
+
+
+def csv2paths(fname):
+    """Convert expert data saved in a CSV file to 'paths', as previously
+    defined by the IRL algorithm.
+    """
+    # load csv file
+    log_data = np.genfromtxt(fname, delimiter=',', skip_header=True)
+    obs_log_data = np.genfromtxt('data/airsim_human_data/obs_human_log.csv', delimiter=',', skip_header=True)
+    n_epis = int(np.max(log_data[:,1]))
+    print('Found {} episodes of expert data.'.format(n_epis))
+
+    # loop for each episode, parse observations and actions in a dict
+    paths = []
+    for i in range(n_epis):
+        print('Parsing episode {}'.format(i))
+        observations, actions, returns = parse_episode(log_data, obs_log_data, i)
+
+        path = {'observations': observations,
+                'actions': actions,
+                'returns': returns}
+        paths.append(path)
+
+    return paths
+
+def load_experts(fname, max_files=float('inf'), min_return=None, pickle_format=True):
     config = tf.ConfigProto()
     config.gpu_options.allow_growth = True
-    if hasattr(fname, '__iter__'):
-        paths = []
-        for fname_ in fname:
-            tf.reset_default_graph()
+
+    ### VGG: add option to load csv files instead of pickle
+    if pickle_format:
+        if hasattr(fname, '__iter__'):
+            paths = []
+            for fname_ in fname:
+                tf.reset_default_graph()
+                with tf.Session(config=config):
+                    snapshot_dict = joblib.load(fname_)
+                paths.extend(snapshot_dict['paths'])
+        else:
             with tf.Session(config=config):
-                snapshot_dict = joblib.load(fname_)
-            paths.extend(snapshot_dict['paths'])
+                snapshot_dict = joblib.load(fname)
+            paths = snapshot_dict['paths']
     else:
-        with tf.Session(config=config):
-            snapshot_dict = joblib.load(fname)
-        paths = snapshot_dict['paths']
+        # parse csv file
+        paths = csv2paths(fname)
+        
     tf.reset_default_graph()
 
     trajs = []
@@ -65,6 +122,13 @@ def load_experts(fname, max_files=float('inf'), min_return=None):
         actions = path['actions']
         returns = path['returns']
         total_return = np.sum(returns)
+
+        # # investigate shape of paths
+        # print('obses: ', obses.shape)
+        # print('actions: ', actions.shape)
+        # print('returns: ', returns.shape)
+        # print('total_return: ', total_return.shape)
+
         if (min_return is None) or (total_return >= min_return):
             traj = {'observations': obses, 'actions': actions}
             trajs.append(traj)

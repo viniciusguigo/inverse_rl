@@ -21,7 +21,7 @@ def main():
     ## this method loads expert data saved as pickle file
     # experts = load_latest_experts('data/airsim_final', n=1)
     # this one uses csv:
-    experts = load_experts('data/airsim_human_data/human_log.csv', pickle_format=False)
+    experts = load_experts('data/airsim_human_data/log.csv', pickle_format=False)
 
     irl_model = GAIL(env_spec=env.spec, expert_trajs=experts)
     policy = GaussianMLPPolicy(name='policy', env_spec=env.spec, hidden_sizes=(32, 32))
@@ -29,16 +29,17 @@ def main():
         env=env,
         policy=policy,
         irl_model=irl_model,
-        n_itr=500,
-        batch_size=1000,
-        max_path_length=100,
+        n_itr=5000,
+        batch_size=60,
+        max_path_length=60,
         discount=0.99,
         store_paths=True,
-        discrim_train_itrs=50,
+        discrim_train_itrs=100,
         irl_model_wt=1.0,
         entropy_weight=0.0, # GAIL should not use entropy unless for exploration
         zero_environment_reward=True,
-        baseline=LinearFeatureBaseline(env_spec=env.spec)
+        baseline=LinearFeatureBaseline(env_spec=env.spec),
+        n_parallel=0
     )
 
     with rllab_logdir(algo=algo, dirname='data/airsim_gail'):

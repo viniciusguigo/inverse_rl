@@ -1297,7 +1297,7 @@ class HRI_AirSim_Landing(HRI_AirSim):
             reward = 1/dist_to_pad_3d
         else:
             reward = 1/dist_to_pad_3d
-        #print('Reward: ', reward)
+        print('Reward: ', reward)
 
         # # Reward: 1 if close enough to pad, 0 otherwise
         # if done == 1:

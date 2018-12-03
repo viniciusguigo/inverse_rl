@@ -57,15 +57,14 @@ def parse_episode(log_data, obs_log_data, epi_n):
     # parse specific episode
     steps = np.where(log_data[:,1] == epi_n)
     steps = np.squeeze(np.asarray(log_data[steps,0])).astype(int)
-    steps = steps[:-1]
-    print(steps)
+
+    # find initial and final index in 
 
     # parse states and actions
     # hardcoded to take a (15,) vector for obs and (2,) for actions
-    states = obs_log_data[steps,6:]
-    actions = obs_log_data[steps,2:4]
-    rewards = obs_log_data[steps,1]
-    print(rewards)
+    states = obs_log_data[steps,1:]
+    actions = log_data[steps,3:5]
+    rewards = log_data[steps,7]
 
     return states, actions, rewards
 
@@ -76,7 +75,7 @@ def csv2paths(fname):
     """
     # load csv file
     log_data = np.genfromtxt(fname, delimiter=',', skip_header=True)
-    obs_log_data = np.genfromtxt('data/airsim_human_data/obs_human_log.csv', delimiter=',', skip_header=True)
+    obs_log_data = np.genfromtxt('data/airsim_human_data/low_obs_log.csv', delimiter=',', skip_header=True)
     n_epis = int(np.max(log_data[:,1]))
     print('Found {} episodes of expert data.'.format(n_epis))
 

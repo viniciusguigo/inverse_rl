@@ -13,7 +13,7 @@ from inverse_rl.utils.log_utils import rllab_logdir, load_latest_experts
 def main():
     env = TfEnv(GymEnv('Pendulum-v0', record_video=False, record_log=False))
     
-    experts = load_latest_experts('data/pendulum', n=5)
+    experts = load_latest_experts('data/pendulum', n=10)
 
     irl_model = GAIL(env_spec=env.spec, expert_trajs=experts)
     policy = GaussianMLPPolicy(name='policy', env_spec=env.spec, hidden_sizes=(32, 32))
@@ -21,7 +21,7 @@ def main():
         env=env,
         policy=policy,
         irl_model=irl_model,
-        n_itr=200,
+        n_itr=1000,
         batch_size=1000,
         max_path_length=100,
         discount=0.99,

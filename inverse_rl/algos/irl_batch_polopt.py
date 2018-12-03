@@ -162,9 +162,13 @@ class IRLBatchPolopt(RLAlgorithm, metaclass=Hyperparametrized):
 
         probs = self.irl_model.eval(paths, gamma=self.discount, itr=itr)
 
-        logger.record_tabular('IRLRewardMean', np.mean(probs))
-        logger.record_tabular('IRLRewardMax', np.max(probs))
-        logger.record_tabular('IRLRewardMin', np.min(probs))
+        # logger.record_tabular('IRLRewardMean', np.mean(probs))
+        # logger.record_tabular('IRLRewardMax', np.max(probs))
+        # logger.record_tabular('IRLRewardMin', np.min(probs))
+        probs_unravel = flat_list = [item for sublist in probs for item in sublist]
+        logger.record_tabular('IRLRewardMean', np.mean(probs_unravel))
+        logger.record_tabular('IRLRewardMax', np.max(probs_unravel))
+        logger.record_tabular('IRLRewardMin', np.min(probs_unravel))
 
 
         if self.irl_model.score_trajectories:

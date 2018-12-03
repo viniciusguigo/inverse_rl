@@ -54,6 +54,7 @@ class IRLNPO(IRLBatchPolopt):
         ]
 
         dist = self.policy.distribution
+        print(dist)
 
         old_dist_info_vars = {
             k: tf.placeholder(tf.float32, shape=[None] * (1 + is_recurrent) + list(shape), name='old_%s' % k)
@@ -81,6 +82,7 @@ class IRLNPO(IRLBatchPolopt):
                 log_std = dist_info_vars['log_std']
                 ent = tf.reduce_sum(log_std + tf.log(tf.sqrt(2 * np.pi * np.e)), reduction_indices=-1)
             elif 'prob' in dist_info_vars:
+                print('Entered prob ent')
                 prob = dist_info_vars['prob']
                 ent = -tf.reduce_sum(prob*tf.log(prob), reduction_indices=-1)
             else:

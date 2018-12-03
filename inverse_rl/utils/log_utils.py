@@ -43,7 +43,7 @@ def get_expert_fnames(log_dir, n=5):
         yield fname
 
 
-def load_experts(fname, max_files=float('inf'), min_return=None):
+def load_experts(fname, max_files=float('inf'), min_return=None, max_path_length=None):
     config = tf.ConfigProto()
     config.gpu_options.allow_growth = True
     if hasattr(fname, '__iter__'):
@@ -61,9 +61,10 @@ def load_experts(fname, max_files=float('inf'), min_return=None):
 
     trajs = []
     for path in paths:
-        obses = path['observations']
-        actions = path['actions']
-        returns = path['returns']
+        obses = path['observations'][0:max_path_length]
+        actions = path['actions'][0:max_path_length]
+        returns = path['returns'][0:max_path_length]
+        # print(len(returns))
         total_return = np.sum(returns)
         if (min_return is None) or (total_return >= min_return):
             traj = {'observations': obses, 'actions': actions}
@@ -73,8 +74,8 @@ def load_experts(fname, max_files=float('inf'), min_return=None):
     return trajs
 
 
-def load_latest_experts(logdir, n=5, min_return=None):
-    return load_experts(get_expert_fnames(logdir, n=n), min_return=min_return)
+def load_latest_experts(logdir, n=5, min_return=None, max_path_length=None):
+    return load_experts(get_expert_fnames(logdir, n=n), min_return=min_return, max_path_length=max_path_length)
 
 
 def load_latest_experts_multiple_runs(logdir, n=5):

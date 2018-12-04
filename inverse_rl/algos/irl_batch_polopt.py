@@ -165,10 +165,15 @@ class IRLBatchPolopt(RLAlgorithm, metaclass=Hyperparametrized):
         # logger.record_tabular('IRLRewardMean', np.mean(probs))
         # logger.record_tabular('IRLRewardMax', np.max(probs))
         # logger.record_tabular('IRLRewardMin', np.min(probs))
-        probs_unravel = flat_list = [item for sublist in probs for item in sublist]
-        logger.record_tabular('IRLRewardMean', np.mean(probs_unravel))
-        logger.record_tabular('IRLRewardMax', np.max(probs_unravel))
-        logger.record_tabular('IRLRewardMin', np.min(probs_unravel))
+        # probs_unravel = flat_list = [item for sublist in probs for item in sublist]
+        # logger.record_tabular('IRLRewardMean', np.mean(probs_unravel))
+        # logger.record_tabular('IRLRewardMax', np.max(probs_unravel))
+        # logger.record_tabular('IRLRewardMin', np.min(probs_unravel))
+        ### VGG: Nov 28, 2018
+        ## Wrong dimension when running AirSim and GAIL
+        #logger.record_tabular('IRLRewardMean', np.mean(probs))
+        #logger.record_tabular('IRLRewardMax', np.max(probs))
+        #logger.record_tabular('IRLRewardMin', np.min(probs))
 
 
         if self.irl_model.score_trajectories:

@@ -1,3 +1,7 @@
+data/*.pkl
+*.pyc
 *.pkl
 *.pyc
 data/pendulum/*.png
+data/2018_*
+

@@ -16,12 +16,12 @@ from inverse_rl.utils.log_utils import rllab_logdir, load_latest_experts
 def main():
     env = TfEnv(GymEnv('LunarLanderContinuous-v2', record_video=False, record_log=False))
     
-    n_experts = 400
+    n_experts = 1
     experts = load_latest_experts('data/lunarlander_collect_1', n=n_experts, min_return=190, max_path_length=200)
     # print(len(experts))
 
     irl_model = GAIL(env_spec=env.spec, expert_trajs=experts)
-    policy = GaussianMLPPolicy(name='policy', env_spec=env.spec, hidden_sizes=(300, 300, 100)) # (200, 200, 100)
+    policy = GaussianMLPPolicy(name='policy', env_spec=env.spec, hidden_sizes=(30, 30)) # (300, 300, 100) for 400 experts
     # policy = CategoricalConvPolicy(name='policy', env_spec=env.spec, hidden_sizes=(500, 500),
     #                                 conv_filters=[16, 16],
     #                                 conv_filter_sizes=[4, 4],

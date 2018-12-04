@@ -12,6 +12,8 @@ def main(n_idx):
     else:
         data_addr = './data/lunarlander_gail_{}'.format(n_idx)
 
+    if n_idx == '1':
+        t_idx = '25'
     if n_idx == '5':
         t_idx = '125'
     if n_idx == '50':
@@ -42,7 +44,7 @@ def main(n_idx):
 
 if __name__ == '__main__':
     # ns = ['5','30','40','50','60','70','100','200', '300','400','600','700'] # Trajectories 51, 304, 405, -, 606, 812, - , 4078, 6593, 15095, 17653
-    ns = ['5','50','100','400']#,'700'] # Trajectories 125, 1250, 2505, 10035
+    ns = ['1','5','50','100','400']#,'700'] # Trajectories 125, 1250, 2505, 10035
 
     plt.figure()
     main(n_idx='collect')

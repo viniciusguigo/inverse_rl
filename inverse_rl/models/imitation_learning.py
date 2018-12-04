@@ -239,6 +239,7 @@ class GAIL(SingleTimestepIRL):
             expert_obs_batch, expert_act_batch = self.sample_batch(expert_obs, expert_acts, batch_size=batch_size)
             labels = np.zeros((batch_size*2, 1))
             labels[batch_size:] = 1.0
+
             obs_batch = np.concatenate([obs_batch, expert_obs_batch], axis=0)
             act_batch = np.concatenate([act_batch, expert_act_batch], axis=0)
 

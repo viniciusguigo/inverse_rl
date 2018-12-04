@@ -13,22 +13,22 @@ from inverse_rl.utils.log_utils import rllab_logdir, load_latest_experts
 def main(eval_reward = False):
     env = TfEnv(GymEnv('LunarLanderContinuous-v2', record_video=False, record_log=False))
     
-    n_experts = 100
-    experts = load_latest_experts('data/lunarlander', n=n_experts)
-    dirname='data/lunarlander_irl' # dir to save logs and images
+    n_experts = 50
+    experts = load_latest_experts('data/lunarlander_collect_1', n=n_experts)
+    dirname='data/lunarlander_irl_'+str(n_experts) # dir to save logs and images
 
     irl_model = AIRLStateAction(env_spec=env.spec, expert_trajs=experts)
-    policy = GaussianMLPPolicy(name='policy', env_spec=env.spec, hidden_sizes=(200, 200))
+    policy = GaussianMLPPolicy(name='policy', env_spec=env.spec, hidden_sizes=(120, 120))
     algo = IRLTRPO(
         env=env,
         policy=policy,
         irl_model=irl_model,
-        n_itr=1000,
-        batch_size=3000,
+        n_itr=500,
+        batch_size=7000,
         max_path_length=200,
         discount=0.99,
         store_paths=True,
-        discrim_train_itrs=50,
+        discrim_train_itrs=100,
         irl_model_wt=1.0,
         entropy_weight=0.1, # this should be 1.0 but 0.1 seems to work better
         zero_environment_reward=True,

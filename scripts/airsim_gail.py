@@ -30,7 +30,7 @@ def main():
         policy=policy,
         irl_model=irl_model,
         n_itr=5000,
-        batch_size=60,
+        batch_size=1200,
         max_path_length=60,
         discount=0.99,
         store_paths=True,
@@ -39,7 +39,8 @@ def main():
         entropy_weight=0.0, # GAIL should not use entropy unless for exploration
         zero_environment_reward=True,
         baseline=LinearFeatureBaseline(env_spec=env.spec),
-        n_parallel=0
+        n_parallel=0,
+        sampler_args={'n_envs': 1}
     )
 
     with rllab_logdir(algo=algo, dirname='data/airsim_gail'):

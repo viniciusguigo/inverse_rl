@@ -82,23 +82,24 @@ if __name__ == '__main__':
     fig, ax = plt.subplots(1)
     ax.set_xlabel("Iteration")
     ax.set_ylabel("Original Task Average Return")
-    ax.set_xlim([0,750])
+    #ax.set_xlim([0,500])
 
     # plot data
     ## GAIL (v2)
-    run_id = './data/airsim_gail_v2'
-    run_id_label = 'v1'
-    n_samples = process_avg(fig, ax, run_id, run_id_label, avg_factor)
+    #run_id = './data/airsim_gail_v2'
+    #run_id_label = 'v1'
+    #n_samples = process_avg(fig, ax, run_id, run_id_label, avg_factor)
 
     ## GAIL (v3)
-    run_id = './data/airsim_gail_v3'
-    run_id_label = 'v2'
-    n_samples_v3 = process_avg(fig, ax, run_id, run_id_label, avg_factor)
+    #run_id = './data/airsim_gail_v3'
+    #run_id_label = 'v2'
+    #n_samples_v3 = process_avg(fig, ax, run_id, run_id_label, avg_factor)
 
     ## GAIL (v4)
     run_id = './data/airsim_gail'
-    run_id_label = 'v3'
+    run_id_label = 'GAIL'
     n_samples = process_avg(fig, ax, run_id, run_id_label, avg_factor=1)
+    ax.set_xlim([0,n_samples])
 
     ## HUMAN
     log_data = np.genfromtxt('data/airsim_human_data/log.csv', delimiter=',', skip_header=True)
@@ -113,11 +114,11 @@ if __name__ == '__main__':
     # print human mean reward and stddev bounds
     human_mean = np.mean(human_data)
     human_stddev = np.std(human_data)
-    ax.hlines(human_mean, 0, n_samples_v3, linestyle='--', color='black', alpha=0.75, label='Human')
+    ax.hlines(human_mean, 0, n_samples, linestyle='--', color='black', alpha=0.75, label='Human')
     #ax.hlines(human_mean+human_stddev, 0, n_samples_v3, linestyle='dotted', label='Human Stddev')
     #ax.hlines(human_mean-human_stddev, 0, n_samples_v3, linestyle='dotted')
-    ax.fill_between(np.arange(n_samples_v3), human_mean, human_mean+human_stddev, facecolor='black', alpha=0.25)
-    ax.fill_between(np.arange(n_samples_v3), human_mean, human_mean-human_stddev, facecolor='black', alpha=0.25)
+    ax.fill_between(np.arange(n_samples), human_mean, human_mean+human_stddev, facecolor='black', alpha=0.25)
+    ax.fill_between(np.arange(n_samples), human_mean, human_mean-human_stddev, facecolor='black', alpha=0.25)
     
     # save/show pic
     plt.legend()

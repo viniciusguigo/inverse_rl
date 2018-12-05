@@ -82,7 +82,6 @@ def csv2paths(fname):
     # loop for each episode, parse observations and actions in a dict
     paths = []
     for i in range(n_epis):
-        print('Parsing episode {}'.format(i))
         observations, actions, returns = parse_episode(log_data, obs_log_data, i)
 
         path = {'observations': observations,

@@ -16,7 +16,7 @@ from inverse_rl.utils.log_utils import rllab_logdir, load_latest_experts
 def main():
     env = TfEnv(GymEnv('LunarLanderContinuous-v2', record_video=False, record_log=False))
     
-    n_experts = 1
+    n_experts = 5
     experts = load_latest_experts('data/lunarlander_collect_1', n=n_experts, min_return=190, max_path_length=200)
     # print(len(experts))
 
@@ -64,8 +64,8 @@ def main():
         env=env,
         policy=policy,
         irl_model=irl_model,
-        n_itr=500,
-        batch_size=7000,
+        n_itr=600,
+        batch_size=4000,
         max_path_length=200,
         discount=0.99,
         store_paths=True,
@@ -77,7 +77,7 @@ def main():
         baseline=LinearFeatureBaseline(env_spec=env.spec)
     )
 
-    with rllab_logdir(algo=algo, dirname='data/lunarlander_gail_'+str(n_experts)):
+    with rllab_logdir(algo=algo, dirname='data/lunarlander_gail_3_mass_'+str(n_experts)):
         with tf.Session():
             algo.train()
 

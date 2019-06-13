@@ -16,7 +16,7 @@ from inverse_rl.utils.log_utils import rllab_logdir
 def main():
     env = TfEnv(GymEnv('LunarLanderContinuous-v2', record_video=False, record_log=False))
     # env = normalize(GymEnv('LunarLanderContinuous-v2', record_video=False, record_log=False))
-    policy = GaussianMLPPolicy(name='policy', env_spec=env.spec, hidden_sizes=(500, 500)) # (500, 500, 500) # (500, 500)
+    policy = GaussianMLPPolicy(name='policy', env_spec=env.spec, hidden_sizes=(20, 20)) # (500, 500)
     # policy = DeterministicMLPPolicy(
     #     env_spec=env.spec,
     #     # The neural network policy should have two hidden layers
@@ -49,7 +49,7 @@ def main():
         env=env,
         policy=policy,
         n_itr=1000,
-        batch_size=5000, # 3000 #2000
+        batch_size=7000, # 3000 #2000
         max_path_length=200, # 200
         discount=0.99,
         store_paths=True,
@@ -58,7 +58,7 @@ def main():
         baseline=LinearFeatureBaseline(env_spec=env.spec)
     )
 
-    with rllab_logdir(algo=algo, dirname='data/lunarlander_collect_1'):
+    with rllab_logdir(algo=algo, dirname='data/lunarlander_collect_2'):
         algo.train()
 
 if __name__ == "__main__":

@@ -54,7 +54,7 @@ class IRLNPO(IRLBatchPolopt):
         ]
 
         dist = self.policy.distribution
-        print(dist)
+        # print(dist)
 
         old_dist_info_vars = {
             k: tf.placeholder(tf.float32, shape=[None] * (1 + is_recurrent) + list(shape), name='old_%s' % k)

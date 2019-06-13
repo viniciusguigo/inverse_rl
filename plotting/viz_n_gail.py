@@ -7,10 +7,10 @@ sns.set(style='whitegrid', font_scale=1.25)
 def main(n_idx):
     # define data location
     if n_idx == 'collect':
-        data_addr = './data/lunarlander_collect_1'
+        data_addr = './data/lunarlander_collect_2'
         t_idx = 'expert'
     else:
-        data_addr = './data/lunarlander_gail_{}'.format(n_idx)
+        data_addr = './data/lunarlander_irl_{}'.format(n_idx)
 
     if n_idx == '1':
         t_idx = '25'
@@ -35,19 +35,19 @@ def main(n_idx):
     # plot them
     plt.ylabel('Average Reward')
     plt.xlabel('Iteration')
-    plt.plot(data[0:500,avg_return_idx],label=t_idx)
-    plt.xlim([0,500])
-    # plt.plot(data[:,avg_return_idx],label=n_idx)
-    # plt.xlim([0,data.shape[0]])
+    # plt.plot(data[25:500,avg_return_idx],label=t_idx)
+    # plt.xlim([25,500])
+    plt.plot(data[:,avg_return_idx],label=t_idx)
+    plt.xlim([0,data.shape[0]])
     plt.tight_layout()
     plt.legend()
 
 if __name__ == '__main__':
     # ns = ['5','30','40','50','60','70','100','200', '300','400','600','700'] # Trajectories 51, 304, 405, -, 606, 812, - , 4078, 6593, 15095, 17653
     ns = ['1','5','50','100','400']#,'700'] # Trajectories 125, 1250, 2505, 10035
-
+    ns = ['1']
     plt.figure()
-    main(n_idx='collect')
+    # main(n_idx='collect')
     for n in ns:
         print('Processing {} expert trajectories'.format(n))
         main(n_idx=n)
